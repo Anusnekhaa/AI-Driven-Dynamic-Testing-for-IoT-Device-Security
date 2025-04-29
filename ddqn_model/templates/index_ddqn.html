@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attack Detection Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h2 {
+            margin-top: 30px;
+        }
+        .metrics {
+            background: #f2f2f2;
+            padding: 20px;
+            border-radius: 10px;
+            width: fit-content;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 6px 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Attack Detection Inference</h1>
+
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required>
+        <button type="submit">Upload and Analyze</button>
+    </form>
+
+    <div id="loader" style="display:none; text-align:center; margin-top:20px;">
+        <p>Processing... Please wait.</p>
+        <div style="border: 6px solid #f3f3f3; border-top: 6px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+    </div>
+
+    <div id="results" class="container" style="display:none;">
+        <div class="metrics">
+            <h2>Performance Metrics</h2>
+            <p><strong>Total Reward:</strong> <span id="reward"></span></p>
+            <p><strong>Number of Samples:</strong> <span id="samples"></span></p>
+            <p><strong>Accuracy (from reward):</strong> <span id="accuracy-percent"></span>%</p>
+            <p><strong>Accuracy:</strong> <span id="accuracy"></span></p>
+            <p><strong>F1 Score:</strong> <span id="f1"></span></p>
+            <p><strong>Precision:</strong> <span id="precision"></span></p>
+            <p><strong>Recall:</strong> <span id="recall"></span></p>
+
+        </div>
+        
+        <div>
+            <h2>Confusion Matrix</h2>
+            <img id="cm-img" alt="Confusion Matrix">
+        </div>
+
+        <div>
+            <h2>Normalized Confusion Matrix</h2>
+            <img id="norm-cm-img" alt="Normalized Confusion Matrix">
+            <div id="norm-cm-table-container"></div>
+        </div>
+
+        <div>
+            <h2>Predicted Class Distribution</h2>
+            <img id="bar-img" alt="Class Distribution">
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("upload-form");
+        const resultsDiv = document.getElementById("results");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            const response = await fetch("/upload_csv", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                alert("Error: " + data.error);
+                return;
+            }
+
+            document.getElementById("reward").textContent = data.total_reward;
+            document.getElementById("samples").textContent = data.num_samples;
+            document.getElementById("accuracy-percent").textContent = data.accuracy_percent;
+            document.getElementById("accuracy").textContent = data.accuracy;
+            document.getElementById("f1").textContent = data.f1_score;
+            document.getElementById("precision").textContent = data.precision;
+            document.getElementById("recall").textContent = data.recall;
+
+            document.getElementById("cm-img").src = "data:image/png;base64," + data.cm_image_base64;
+            document.getElementById("norm-cm-img").src = "data:image/png;base64," + data.norm_cm_image_base64;
+            document.getElementById("bar-img").src = "data:image/png;base64," + data.bar_chart_base64;
+
+            const normCMTableContainer = document.getElementById("norm-cm-table-container");
+            const normCM = data.normalized_confusion_matrix;
+
+            // Generate HTML table for normalized confusion matrix
+            let tableHTML = '<table><thead><tr><th></th>';
+            for (let i = 0; i < normCM.length; i++) {
+                tableHTML += `<th>Pred ${i}</th>`;
+            }
+            tableHTML += '</tr></thead><tbody>';
+            for (let i = 0; i < normCM.length; i++) {
+                tableHTML += `<tr><th>True ${i}</th>`;
+                for (let j = 0; j < normCM[i].length; j++) {
+                    tableHTML += `<td>${normCM[i][j].toFixed(2)}</td>`;
+                }
+                tableHTML += '</tr>';
+            }
+            tableHTML += '</tbody></table>';
+
+            normCMTableContainer.innerHTML = tableHTML;
+
+            resultsDiv.style.display = "block";
+        });
+    </script>
+</body>
+</html>

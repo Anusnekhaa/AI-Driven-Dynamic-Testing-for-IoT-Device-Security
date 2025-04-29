@@ -1,0 +1,59 @@
+
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Credentials and environment variables
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+service-account*.json
+credentials*.json
+
+# Temporary and log files
+*.log
+*.tmp
+*.temp
+~$*
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE/editor settings
+.vscode/
+.idea/
+
+# Training logs and generated checkpoints
+runs/
+logs/
+checkpoints/
+tensorboard/
+wandb/
+
+# Installed binary libraries
+*.dll
+*.so
+*.dylib
+
+/dataset/*
+!/dataset/README.md
+
+# Python packaging/build artifacts
+build/
+dist/
+*.egg-info/
