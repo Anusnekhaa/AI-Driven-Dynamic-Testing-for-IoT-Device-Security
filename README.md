@@ -13,7 +13,7 @@ The DDQN and GNN pipelines have separate model implementations and supporting da
 
 ## Project workflow
 
-![alt text](image-3.png)
+<img width="1211" height="528" alt="image" src="https://github.com/user-attachments/assets/0b8de616-c5d5-4656-9b44-692ccd19cc9a" />
 
 1. **Traffic simulation:** Generate benign and DDoS IoT network scenarios using NS-3.
 2. **Packet capture and inspection:** Capture network traffic and inspect PCAP files using Wireshark.
@@ -60,11 +60,12 @@ Placeholders are given for dataset directories within the code for each model. A
 
 `out/` contain demo video on DDoS and Benign traffic attack scenarious for an IoT-based environment. 
 
-![alt text](image-2.png)
+<img width="703" height="232" alt="image" src="https://github.com/user-attachments/assets/a5c51ddc-66d3-4e02-aeb1-1bf6aa2c468c" />
 
-![alt text](image.png)
+<img width="718" height="372" alt="image" src="https://github.com/user-attachments/assets/fac39be5-7f0e-4dc8-9533-923d2992bfd8" />
 
-![alt text](image-1.png)
+<img width="713" height="407" alt="image" src="https://github.com/user-attachments/assets/da23e1fa-000a-4ffd-ae40-98557a7af31a" />
+
 
 ## Responsible use
 
